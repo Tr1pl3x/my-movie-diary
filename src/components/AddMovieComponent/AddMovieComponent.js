@@ -16,6 +16,12 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
             setWatchedDate(editMovie.watchedDate);
             setRating(editMovie.rating);
             setNotes(editMovie.notes);
+        } else {
+            // Clear fields when adding a new movie
+            setTitle('');
+            setWatchedDate('');
+            setRating('');
+            setNotes('');
         }
     }, [editMovie]);
 
@@ -25,22 +31,41 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
             setError('Incorrect password');
             return;
         }
-
-        const newMovie = {
-            title, // Title is not editable, so keep it as it is
-            poster: editMovie ? editMovie.poster : '', 
-            releaseDate: editMovie ? editMovie.releaseDate : '', 
-            watchedDate,
-            rating,
-            notes: notes.trim() === '' ? 'No comments' : notes,
-        };
-        addMovie(newMovie);
-        setTitle('');
-        setWatchedDate('');
-        setRating('');
-        setNotes('');
-        setPassword('');
-        setError('');
+    
+        // Fetch movie details from API
+        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data)
+            
+            if (data.results && data.results.length > 0) {
+                const movie = data.results[0];
+                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const releaseDate = movie.release_date;
+    
+                const newMovie = {
+                    title: movie.title, // Use title from the API response
+                    poster: posterUrl,
+                    releaseDate: releaseDate,
+                    watchedDate,
+                    rating,
+                    notes: notes.trim() === '' ? 'No comments' : notes,
+                };
+    
+                addMovie(newMovie);
+                setTitle('');
+                setWatchedDate('');
+                setRating('');
+                setNotes('');
+                setPassword('');
+                setError('');
+            } else {
+                setError('No movie found with that title');
+            }
+        } catch (error) {
+            setError('Failed to fetch movie details');
+        }
     };
 
     return (
@@ -53,8 +78,10 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
                     <input
                         type="text"
                         value={title}
-                        readOnly
-                        className={styles.readOnlyInput}  /* Apply the readOnlyInput style */
+                        onChange={(e) => setTitle(e.target.value)}
+                        readOnly={!!editMovie}  /* Only read-only when editing */
+                        className={editMovie ? styles.readOnlyInput : ''}
+                        required
                     />
                 </div>
                 <div>

@@ -33,6 +33,7 @@
     justify-content: center; 
     align-items: center;
     outline: none;
+    transition: opacity 0.2s ease-in-out;
 }
 
 .addButton:hover {
