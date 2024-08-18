@@ -1,0 +1,56 @@
+.addMovieForm {
+    background-color: rgb(24 25 27);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 640px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    margin-right: 10px;
+    display: block; /* Ensures the label is on its own line */
+    font-size: 1rem; /* Ensure label font size is appropriate */
+}
+
+input,
+textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%; /* Makes input fields fill the available width */
+    box-sizing: border-box; /* Ensures padding is included in the width calculation */
+}
+
+textarea {
+    resize: vertical; /* Allows the textarea to expand vertically but keeps width fixed */
+    min-height: 80px; /* Sets a minimum height for the textarea */
+    max-height: 300px; /* Sets a maximum height to prevent it from growing too large */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    margin-bottom: 10px;
+}
