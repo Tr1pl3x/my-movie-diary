@@ -20,8 +20,13 @@ const App = () => {
     const [showAddMovie, setShowAddMovie] = useState(false);
 
     const addMovie = (newMovie) => {
-        setMovies([...movies, newMovie]);
+        setMovies([newMovie, ...movies]);;
         setShowAddMovie(false); // Hide form after adding
+    };
+
+    const removeMovie = (index) => {
+        const updatedMovies = movies.filter((_, i) => i !== index);
+        setMovies(updatedMovies);
     };
 
     return (
@@ -30,7 +35,11 @@ const App = () => {
             {showAddMovie && <AddMovieComponent addMovie={addMovie} />}
             <div className="movie-list">
                 {movies.map((movie, index) => (
-                    <MovieComponent key={index} {...movie} />
+                    <MovieComponent
+                    key={index}
+                    {...movie}
+                    onRemove={() => removeMovie(index)}
+                />
                 ))}
             </div>
         </div>

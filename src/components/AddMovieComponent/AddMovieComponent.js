@@ -9,16 +9,50 @@ const AddMovieComponent = ({ addMovie }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const apiKey = '8fc2844082992a91743e504f0fc3d836'; // Replace with your TMDb API key
+
+    const fetchMovieDetails = async (movieTitle) => {
+        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(movieTitle)}&api_key=${apiKey}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            if (data.results.length > 0) {
+                const movie = data.results[0];
+                return {
+                    title: movie.title, // Get the title from the API
+                    posterUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                    releaseDate: movie.release_date,
+                };
+            } else {
+                setError('No results found for the movie title.');
+                return null;
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            setError('Failed to fetch movie details.');
+            return null;
+        }
+    };
+    
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== '2911') {
             setError('Incorrect password');
             return;
         }
+    
+        const movieDetails = await fetchMovieDetails(title);
+        if (!movieDetails) {
+            return;
+        }
+    
         const newMovie = {
-            title,
-            poster: '', // Placeholder, can be set later if using an API
-            releaseDate: '', // Placeholder, can be set later if using an API
+            title: movieDetails.title || title, // Use the title from the API
+            poster: movieDetails.posterUrl || '', 
+            releaseDate: movieDetails.releaseDate || '', 
             watchedDate,
             rating,
             notes: notes.trim() === '' ? 'No comments' : notes,
@@ -31,13 +65,15 @@ const AddMovieComponent = ({ addMovie }) => {
         setPassword('');
         setError('');
     };
+    
 
     return (
         <div className={styles.addMovieForm}>
-            <h2 >What's the latest movie you watched? 👀</h2>
+            <h2>What's the latest movie you watched? 👀</h2>
+            
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label id>Title:</label>
+                    <label>Title:</label>
                     <input
                         type="text"
                         value={title}
@@ -55,25 +91,26 @@ const AddMovieComponent = ({ addMovie }) => {
                     />
                 </div>
                 <div>
-                    <label>Rating:</label>
+                    <label>Ratings:</label>
                     <input
                         type="number"
                         value={rating}
                         onChange={(e) => setRating(e.target.value)}
                         min="0"
                         max="10"
+                        step="0.1"
                         required
                     />
                 </div>
                 <div>
-                    <label>Notes:</label>
+                    <label>Remarks:</label>
                     <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     ></textarea>
                 </div>
                 <div>
-                    <label>Password:</label>
+                    <label>Admin Password:</label>
                     <input
                         type="password"
                         value={password}

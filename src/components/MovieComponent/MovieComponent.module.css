@@ -1,5 +1,6 @@
 .movieCard {
     display: flex;
+    position: relative; /* Allows absolute positioning within this container */
     border: 1px solid #000000;
     padding: 10px;
     margin: 10px auto;
@@ -19,6 +20,7 @@
 
 .details {
     margin-left: 20px;
+    flex-grow: 1; /* Allows details to take up remaining space */
 }
 
 h2 {
@@ -28,4 +30,23 @@ h2 {
 
 p {
     margin: 5px 0 0 10px;
+}
+
+.trashIcon {
+    position: absolute; /* Position the icon absolutely */
+    top: 10px;          /* Position it 10px from the top */
+    right: 10px;        /* Position it 10px from the right */
+    cursor: pointer;
+}
+
+.trashIcon img {
+    width: 25px;
+    height: 25px;
+    transition: opacity 0.2s ease-in-out;
+    filter: invert(100%);
+    
+}
+
+.trashIcon:hover img {
+    opacity: 0.5;
 }
