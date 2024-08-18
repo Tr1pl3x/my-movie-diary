@@ -1,45 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TitleComponent from './components/TitleComponent/TitleComponent';
 import MovieComponent from './components/MovieComponent/MovieComponent';
 import AddMovieComponent from './components/AddMovieComponent/AddMovieComponent';
 import './App.css';
 
 const App = () => {
-    const [movies, setMovies] = useState([
-        {
-            title: '500 Days of Summer',
-            poster: 'https://m.media-amazon.com/images/M/MV5BMTk5MjM4OTU1OV5BMl5BanBnXkFtZTcwODkzNDIzMw@@._V1_SX300.jpg',
-            releaseDate: '2009-07-17',
-            watchedDate: '2024-01-01',
-            rating: 8.5,
-            notes: 'A refreshing take on relationships.',
-        },
-        // More movies can be added here...
-    ]);
+    const [movies, setMovies] = useState(() => {
+        const savedMovies = localStorage.getItem('movies');
+        return savedMovies ? JSON.parse(savedMovies) : [];
+    });
 
     const [showAddMovie, setShowAddMovie] = useState(false);
+    const [editMovieIndex, setEditMovieIndex] = useState(null); // New state for editing
+
+    useEffect(() => {
+        localStorage.setItem('movies', JSON.stringify(movies));
+    }, [movies]);
 
     const addMovie = (newMovie) => {
-        setMovies([newMovie, ...movies]);;
+        let updatedMovies;
+        if (editMovieIndex !== null) {
+            updatedMovies = [...movies];
+            updatedMovies[editMovieIndex] = newMovie; // Replace the movie being edited
+            setEditMovieIndex(null); // Reset edit state
+        } else {
+            updatedMovies = [newMovie, ...movies];
+        }
+        
+        // Sort movies by watchedDate in descending order (most recent first)
+        updatedMovies.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
+        
+        setMovies(updatedMovies);
         setShowAddMovie(false); // Hide form after adding
     };
+    
 
     const removeMovie = (index) => {
         const updatedMovies = movies.filter((_, i) => i !== index);
         setMovies(updatedMovies);
     };
 
+    const startEditing = (index) => {
+        setEditMovieIndex(index); // Set the movie being edited
+        setShowAddMovie(true); // Show the form
+    };
+
     return (
         <div className="App">
             <TitleComponent toggleAddMovie={() => setShowAddMovie(!showAddMovie)} />
-            {showAddMovie && <AddMovieComponent addMovie={addMovie} />}
+            {showAddMovie && (
+                <AddMovieComponent
+                    addMovie={addMovie}
+                    editMovie={editMovieIndex !== null ? movies[editMovieIndex] : null}
+                />
+            )}
             <div className="movie-list">
                 {movies.map((movie, index) => (
                     <MovieComponent
-                    key={index}
-                    {...movie}
-                    onRemove={() => removeMovie(index)}
-                />
+                        key={index}
+                        {...movie}
+                        onRemove={() => removeMovie(index)}
+                        onEdit={() => startEditing(index)}
+                    />
                 ))}
             </div>
         </div>

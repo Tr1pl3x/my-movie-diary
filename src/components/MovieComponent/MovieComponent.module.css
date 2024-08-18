@@ -33,9 +33,9 @@ p {
 }
 
 .trashIcon {
-    position: absolute; /* Position the icon absolutely */
-    top: 10px;          /* Position it 10px from the top */
-    right: 10px;        /* Position it 10px from the right */
+    position: absolute;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
 }
 
@@ -44,9 +44,26 @@ p {
     height: 25px;
     transition: opacity 0.2s ease-in-out;
     filter: invert(100%);
-    
 }
 
 .trashIcon:hover img {
+    opacity: 0.5;
+}
+
+.editIcon {
+    position: absolute;
+    top: 10px;
+    right: 50px; /* Position it slightly to the left of the trash icon */
+    cursor: pointer;
+}
+
+.editIcon img {
+    width: 25px;
+    height: 25px;
+    transition: opacity 0.2s ease-in-out;
+    filter: invert(100%);
+}
+
+.editIcon:hover img {
     opacity: 0.5;
 }

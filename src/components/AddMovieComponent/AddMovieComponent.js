@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './AddMovieComponent.module.css';
 import config from '../../config';
-  
 
-
-const AddMovieComponent = ({ addMovie }) => {
+const AddMovieComponent = ({ addMovie, editMovie }) => {
     const [title, setTitle] = useState('');
     const [watchedDate, setWatchedDate] = useState('');
     const [rating, setRating] = useState('');
@@ -12,48 +10,26 @@ const AddMovieComponent = ({ addMovie }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const fetchMovieDetails = async (movieTitle) => {
-        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(movieTitle)}&api_key=${config.apiKey}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            if (data.results.length > 0) {
-                const movie = data.results[0];
-                return {
-                    title: movie.title, // Get the title from the API
-                    posterUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                    releaseDate: movie.release_date,
-                };
-            } else {
-                setError('No results found for the movie title.');
-                return null;
-            }
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-            setError('Failed to fetch movie details.');
-            return null;
+    useEffect(() => {
+        if (editMovie) {
+            setTitle(editMovie.title);
+            setWatchedDate(editMovie.watchedDate);
+            setRating(editMovie.rating);
+            setNotes(editMovie.notes);
         }
-    };
-    
+    }, [editMovie]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== config.adminPassword) {  // Compare with the password in config
+        if (password !== config.adminPassword) {
             setError('Incorrect password');
             return;
         }
-    
-        const movieDetails = await fetchMovieDetails(title);
-        if (!movieDetails) {
-            return;
-        }
-    
+
         const newMovie = {
-            title: movieDetails.title || title, // Use the title from the API
-            poster: movieDetails.posterUrl || '', 
-            releaseDate: movieDetails.releaseDate || '', 
+            title, // Title is not editable, so keep it as it is
+            poster: editMovie ? editMovie.poster : '', 
+            releaseDate: editMovie ? editMovie.releaseDate : '', 
             watchedDate,
             rating,
             notes: notes.trim() === '' ? 'No comments' : notes,
@@ -66,11 +42,10 @@ const AddMovieComponent = ({ addMovie }) => {
         setPassword('');
         setError('');
     };
-    
 
     return (
         <div className={styles.addMovieForm}>
-            <h2>What's the latest movie you watched? 👀</h2>
+            <h2>{editMovie ? 'Edit Movie' : "What's the latest movie you watched? 👀"}</h2>
             
             <form onSubmit={handleSubmit}>
                 <div>
@@ -78,8 +53,8 @@ const AddMovieComponent = ({ addMovie }) => {
                     <input
                         type="text"
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
+                        readOnly
+                        className={styles.readOnlyInput}  /* Apply the readOnlyInput style */
                     />
                 </div>
                 <div>
@@ -120,7 +95,7 @@ const AddMovieComponent = ({ addMovie }) => {
                     />
                 </div>
                 {error && <p className={styles.error}>{error}</p>}
-                <button type="submit">Add Movie</button>
+                <button type="submit">{editMovie ? 'Update Movie' : 'Add Movie'}</button>
             </form>
         </div>
     );

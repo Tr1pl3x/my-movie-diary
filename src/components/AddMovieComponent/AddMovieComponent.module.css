@@ -54,3 +54,10 @@ button:hover {
     color: red;
     margin-bottom: 10px;
 }
+
+.readOnlyInput {
+    background-color: #f0f0f0;  /* Light grey background */
+    border: 1px solid #ccc;      /* Grey border */
+    cursor: not-allowed;         /* Not-allowed cursor */
+    color: #666;                 /* Grey text color */
+}
