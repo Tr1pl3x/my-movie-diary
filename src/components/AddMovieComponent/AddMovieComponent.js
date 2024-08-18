@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import styles from './AddMovieComponent.module.css';
+import config from '../../config';
+  
+
 
 const AddMovieComponent = ({ addMovie }) => {
     const [title, setTitle] = useState('');
@@ -9,10 +12,8 @@ const AddMovieComponent = ({ addMovie }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const apiKey = '8fc2844082992a91743e504f0fc3d836'; // Replace with your TMDb API key
-
     const fetchMovieDetails = async (movieTitle) => {
-        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(movieTitle)}&api_key=${apiKey}`;
+        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(movieTitle)}&api_key=${config.apiKey}`;
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -39,7 +40,7 @@ const AddMovieComponent = ({ addMovie }) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== '2911') {
+        if (password !== config.adminPassword) {  // Compare with the password in config
             setError('Incorrect password');
             return;
         }

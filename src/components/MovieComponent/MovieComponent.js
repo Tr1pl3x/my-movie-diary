@@ -1,11 +1,12 @@
 import React from 'react';
 import styles from './MovieComponent.module.css';
+import config from '../../config';
 
 const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes, onRemove }) => {
     
     const handleRemoveClick = () => {
         const password = prompt('Enter admin password to remove this movie:');
-        if (password === '2911') {
+        if (password === config.adminPassword) {  // Compare with the password in config
             onRemove(); // Call the remove function if the password is correct
         } else {
             alert('Incorrect password. Movie not removed.');
