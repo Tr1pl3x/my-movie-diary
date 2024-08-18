@@ -84,6 +84,7 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
                         required
                     />
                 </div>
+                
                 <div>
                     <label>Watched Date:</label>
                     <input

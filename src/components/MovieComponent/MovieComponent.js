@@ -13,6 +13,12 @@ const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes
         }
     };
 
+    const handleEditClick = () => {
+        onEdit();
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    };
+    
+
     return (
         <div className={styles.movieCard}>
             <img src={poster} alt={`${title} Poster`} className={styles.poster} />
@@ -21,9 +27,9 @@ const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes
                 <p>Release Date: {releaseDate}</p>
                 <p>Watched Date: {watchedDate}</p>
                 <p>Rating: {rating} / 10 ★ </p> 
-                <p>Notes: {notes}</p>
+                <p>Remarks: {notes}</p>
             </div>
-            <div className={styles.editIcon} onClick={onEdit}>
+            <div className={styles.editIcon} onClick={handleEditClick}>
                 <img src="assets/edit.png" alt="Edit" />
             </div>
             <div className={styles.trashIcon} onClick={handleRemoveClick}>
