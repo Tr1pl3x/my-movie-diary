@@ -110,6 +110,11 @@ const App = () => {
                     ))}
                 </div>
             </div>
+            <div className="fixed-icon">
+                <a href="https://tr1pl3x.github.io/personalWebsite1.0/" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/github.png" alt="Fixed Icon" />
+                </a>
+            </div>
         </div>
     );
 };
