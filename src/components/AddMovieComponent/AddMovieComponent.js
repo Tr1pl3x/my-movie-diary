@@ -70,7 +70,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
 
     return (
         <div className={styles.addMovieForm}>
-            <h2>{editMovie ? 'Edit Movie' : "What's the latest movie you watched? 👀"}</h2>
+            <h2>{editMovie ? 'Edit the details of the selected movie 🛠️' : "What's the latest movie you watched? 👀"}</h2>
             
             <form onSubmit={handleSubmit}>
                 <div className={styles.closeButton} onClick={closeForm}>×</div>  {}
