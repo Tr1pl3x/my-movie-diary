@@ -1,0 +1,72 @@
+.movieCard {
+    display: flex;
+    position: relative; /* Allows absolute positioning within this container */
+    border: 1px solid #000000;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 900px;
+    border-radius: 10px;
+    background-color: rgb(24 25 27);
+    color: white;
+}
+
+.poster {
+    margin-left: 10px;
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.details {
+    margin-left: 20px;
+    flex-grow: 1; /* Allows details to take up remaining space */
+}
+
+h2 {
+    font-size: 2rem;
+    margin: 5px 0 5px 0; /* Reduces the top margin */
+}
+
+p {
+    margin: 5px 0 0 10px;
+}
+
+.trashIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.trashIcon img {
+    width: 25px;
+    height: 25px;
+    transition: opacity 0.2s ease-in-out;
+    filter: invert(100%);
+}
+
+.trashIcon:hover img {
+    opacity: 0.5;
+}
+
+.editIcon {
+    position: absolute;
+    top: 10px;
+    right: 50px; /* Position it slightly to the left of the trash icon */
+    cursor: pointer;
+}
+
+.editIcon img {
+    width: 25px;
+    height: 25px;
+    transition: opacity 0.2s ease-in-out;
+    filter: invert(100%);
+}
+
+.editIcon:hover img {
+    opacity: 0.5;
+}

@@ -1,0 +1,43 @@
+.titleContainer {
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    position: relative;
+    padding: 20px;           
+    background-color: rgb(24 25 27);
+    color: white;
+    height: 100px; 
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    flex-grow: 1;            
+    text-align: center;     
+    margin: 0;               
+}
+
+.addButton {
+    width: 30px;           
+    height: 40px;            
+    position: absolute;      
+    right: 10px;            
+    bottom: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;      
+    cursor: pointer;
+    font-size: 2rem;       
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    outline: none;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.addButton:hover {
+    opacity: 0.9;
+}
+
+
