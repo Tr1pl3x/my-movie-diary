@@ -12,10 +12,13 @@ const App = () => {
     const [showAddMovie, setShowAddMovie] = useState(false);
     const [editMovieIndex, setEditMovieIndex] = useState(null); // State for editing
 
+    // Replace the localhost URL with your Render backend URL
+    const backendUrl = 'https://backend-my-movie-diary.onrender.com/movies';
+
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await fetch('http://localhost:5000/movies'); // Correct backend URL
+                const response = await fetch(backendUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -53,7 +56,7 @@ const App = () => {
 
     const addMovie = async (newMovie) => {
         try {
-            const response = await fetch('http://localhost:5000/movies', {  // Use the full URL
+            const response = await fetch(backendUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,7 +96,7 @@ const App = () => {
                 throw new Error('movieId is undefined');
             }
     
-            await fetch(`http://localhost:5000/movies/${movieId}`, {
+            await fetch(`${backendUrl}/${movieId}`, {
                 method: 'DELETE',
             });
     
@@ -103,9 +106,6 @@ const App = () => {
             console.error('Failed to remove movie:', error);
         }
     };
-    
-    
-    
 
     const startEditing = (index) => {
         setEditMovieIndex(index); // Set the movie being edited
