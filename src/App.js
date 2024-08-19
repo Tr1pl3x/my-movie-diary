@@ -6,22 +6,29 @@ import IntroComponent from './components/IntroComponent/IntroComponent';
 import SortComponent from './components/SortComponent/SortComponent';
 import './App.css';
 
-
 const App = () => {
-    const [movies, setMovies] = useState(() => {
-        const savedMovies = localStorage.getItem('movies');
-        const initialMovies = savedMovies ? JSON.parse(savedMovies) : [];
-        return initialMovies.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
-    });
-
+    const [movies, setMovies] = useState([]);
     const [sortOption, setSortOption] = useState('watchedDate'); // Default sort option
     const [showAddMovie, setShowAddMovie] = useState(false);
     const [editMovieIndex, setEditMovieIndex] = useState(null); // State for editing
 
     useEffect(() => {
-        localStorage.setItem('movies', JSON.stringify(movies));
-    }, [movies]);
-
+        const fetchMovies = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/movies'); // Correct backend URL
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setMovies(data.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate)));
+            } catch (error) {
+                console.error('Failed to fetch movies:', error);
+            }
+        };
+    
+        fetchMovies();
+    }, []);
+    
     const handleSort = (event) => {
         const selectedSortOption = event.target.value;
         setSortOption(selectedSortOption);
@@ -44,25 +51,61 @@ const App = () => {
         setMovies(sortedMovies);
     };
 
-    const addMovie = (newMovie) => {
-        let updatedMovies;
-        if (editMovieIndex !== null) {
-            updatedMovies = [...movies];
-            updatedMovies[editMovieIndex] = newMovie; // Replace the movie being edited
-            setEditMovieIndex(null); // Reset edit state
-        } else {
-            updatedMovies = [newMovie, ...movies];
+    const addMovie = async (newMovie) => {
+        try {
+            const response = await fetch('http://localhost:5000/movies', {  // Use the full URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newMovie),
+            });
+    
+            if (!response.ok) {  // Check if the response status is not OK (200)
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const addedMovie = await response.json();
+    
+            let updatedMovies;
+            if (editMovieIndex !== null) {
+                updatedMovies = [...movies];
+                updatedMovies[editMovieIndex] = addedMovie; // Replace the movie being edited
+                setEditMovieIndex(null); // Reset edit state
+            } else {
+                updatedMovies = [addedMovie, ...movies];
+            }
+    
+            handleSort({ target: { value: sortOption } }); // Apply sorting based on the selected option
+            setMovies(updatedMovies);
+            setShowAddMovie(false); // Hide form after adding
+        } catch (error) {
+            console.error('Failed to add movie:', error);  // Log the error
         }
-
-        handleSort({ target: { value: sortOption } }); // Apply sorting based on the selected option
-        setMovies(updatedMovies);
-        setShowAddMovie(false); // Hide form after adding
     };
-
-    const removeMovie = (index) => {
-        const updatedMovies = movies.filter((_, i) => i !== index);
-        setMovies(updatedMovies);
+    
+    const removeMovie = async (index) => {
+        try {
+            const movieId = movies[index].movieId;
+            console.log('Deleting movie with ID:', movieId); // Log the movieId
+    
+            if (!movieId) {
+                throw new Error('movieId is undefined');
+            }
+    
+            await fetch(`http://localhost:5000/movies/${movieId}`, {
+                method: 'DELETE',
+            });
+    
+            const updatedMovies = movies.filter((_, i) => i !== index);
+            setMovies(updatedMovies);
+        } catch (error) {
+            console.error('Failed to remove movie:', error);
+        }
     };
+    
+    
+    
 
     const startEditing = (index) => {
         setEditMovieIndex(index); // Set the movie being edited
@@ -77,20 +120,20 @@ const App = () => {
     return (
         <div className="App">
             <TitleComponent toggleAddMovie={() => setShowAddMovie(!showAddMovie)} />
-            <div className="content-wrapper"> 
-                <div className="left-side-content"> 
+            <div className="content-wrapper">
+                <div className="left-side-content">
                     <IntroComponent />
-                    <SortComponent 
-                        onSort={handleSort} 
-                        selectedSortOption={sortOption} 
+                    <SortComponent
+                        onSort={handleSort}
+                        selectedSortOption={sortOption}
                     />
                 </div>
                 <div className="right-side-content">
                     {showAddMovie && (
-                        <AddMovieComponent 
-                            addMovie={addMovie} 
-                            editMovie={editMovieIndex !== null ? movies[editMovieIndex] : null} 
-                            closeForm={closeForm} 
+                        <AddMovieComponent
+                            addMovie={addMovie}
+                            editMovie={editMovieIndex !== null ? movies[editMovieIndex] : null}
+                            closeForm={closeForm}
                         />
                     )}
                     {movies.map((movie, index) => (

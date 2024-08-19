@@ -31,14 +31,12 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
             setError('Incorrect password');
             return;
         }
-
+    
         // Fetch movie details from API
         const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data)
-            
             if (data.results && data.results.length > 0) {
                 const movie = data.results[0];
                 const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
@@ -53,13 +51,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                     notes: notes.trim() === '' ? 'No comments' : notes,
                 };
     
-                addMovie(newMovie);
-                setTitle('');
-                setWatchedDate('');
-                setRating('');
-                setNotes('');
-                setPassword('');
-                setError('');
+                await addMovie(newMovie);
             } else {
                 setError('No movie found with that title');
             }
@@ -67,6 +59,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
             setError('Failed to fetch movie details');
         }
     };
+    
 
     return (
         <div className={styles.addMovieForm}>
