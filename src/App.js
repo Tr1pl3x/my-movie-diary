@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TitleComponent from './components/TitleComponent/TitleComponent';
 import MovieComponent from './components/MovieComponent/MovieComponent';
 import AddMovieComponent from './components/AddMovieComponent/AddMovieComponent';
+import IntroComponent from './components/IntroComponent/IntroComponent';
 import './App.css';
 
 const App = () => {
@@ -58,24 +59,27 @@ const App = () => {
     return (
         <div className="App">
             <TitleComponent toggleAddMovie={() => setShowAddMovie(!showAddMovie)} />
-            {showAddMovie && (
-                <AddMovieComponent 
-                    addMovie={addMovie} 
-                    editMovie={
-                        editMovieIndex !== null ? movies[editMovieIndex] : null
-                    } closeForm={closeForm} 
-                />
-                
-            )}
-            <div className="movie-list">
-                {movies.map((movie, index) => (
-                    <MovieComponent
-                        key={index}
-                        {...movie}
-                        onRemove={() => removeMovie(index)}
-                        onEdit={() => startEditing(index)}
-                    />
-                ))}
+            <div className="content-wrapper">  {/* Yellow box */}
+                <div className="left-side-content"> {/* Purple box 1 */}
+                    <IntroComponent />
+                </div>
+                <div className="right-side-content"> {/* Purple box 2 */}
+                    {showAddMovie && (
+                        <AddMovieComponent 
+                            addMovie={addMovie} 
+                            editMovie={editMovieIndex !== null ? movies[editMovieIndex] : null} 
+                            closeForm={closeForm} 
+                        />
+                    )}
+                    {movies.map((movie, index) => (
+                        <MovieComponent
+                            key={index}
+                            {...movie}
+                            onRemove={() => removeMovie(index)}
+                            onEdit={() => startEditing(index)}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

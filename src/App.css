@@ -1,20 +1,23 @@
-.add-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    z-index: 10;             /* Ensure it's above other elements */
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;  
+    background-color: #282c34; 
+   
 }
 
-.add-button img {
-    width: 30px;
-    height: 30px;
-    user-select: none;       /* Prevents text selection */
+.left-side-content {
+    flex: 1;
+    max-width: 325px; 
+    border-radius: 8px;
+    padding: 10px 0px 10px 10px;
+    
 }
 
-.add-button:focus {
-    outline: none;           /* Removes any outline on focus */
+.right-side-content {
+    flex: 2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
 }

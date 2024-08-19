@@ -1,0 +1,11 @@
+.introduction {
+    background-color: rgb(66, 71, 85);
+    color: white;
+    padding: 10px 10px 15px 0px;
+    border-radius: 8px;
+    width: 300px; /* Consistent with your width setting */
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: justify; /* This aligns the text to both the left and right */
+    height: auto;
+}

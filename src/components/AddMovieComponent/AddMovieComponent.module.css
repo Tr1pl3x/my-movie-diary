@@ -3,7 +3,7 @@
     color: white;
     padding: 20px;
     border-radius: 10px;
-    margin: 20px auto;
+    margin: 20px 0px 20px 100px;
     width: 640px;
 }
 
@@ -65,8 +65,8 @@ button:hover {
 
 .closeButton {
     position: absolute;
-    top: 180px; /* Adjust this to position vertically */
-    right: 440px; /* Adjust this to position horizontally */
+    top: 170px; /* Adjust this to position vertically */
+    right: 420px; /* Adjust this to position horizontally */
     cursor: pointer;
     font-size: 1.5rem;
     background: none;
