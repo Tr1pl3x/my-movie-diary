@@ -45,14 +45,27 @@ const App = () => {
         setShowAddMovie(true); // Show the form
     };
 
+    const closeForm = () => {
+        setShowAddMovie(false);
+        setEditMovieIndex(null); // Reset the edit state
+    };
+    
+    // ...
+    
+    
+    
+
     return (
         <div className="App">
             <TitleComponent toggleAddMovie={() => setShowAddMovie(!showAddMovie)} />
             {showAddMovie && (
-                <AddMovieComponent
-                    addMovie={addMovie}
-                    editMovie={editMovieIndex !== null ? movies[editMovieIndex] : null}
+                <AddMovieComponent 
+                    addMovie={addMovie} 
+                    editMovie={
+                        editMovieIndex !== null ? movies[editMovieIndex] : null
+                    } closeForm={closeForm} 
                 />
+                
             )}
             <div className="movie-list">
                 {movies.map((movie, index) => (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './AddMovieComponent.module.css';
 import config from '../../config';
 
-const AddMovieComponent = ({ addMovie, editMovie }) => {
+const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
     const [title, setTitle] = useState('');
     const [watchedDate, setWatchedDate] = useState('');
     const [rating, setRating] = useState('');
@@ -31,7 +31,7 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
             setError('Incorrect password');
             return;
         }
-    
+
         // Fetch movie details from API
         const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
         try {
@@ -73,6 +73,7 @@ const AddMovieComponent = ({ addMovie, editMovie }) => {
             <h2>{editMovie ? 'Edit Movie' : "What's the latest movie you watched? 👀"}</h2>
             
             <form onSubmit={handleSubmit}>
+                <div className={styles.closeButton} onClick={closeForm}>×</div>  {/* Close Button */}
                 <div>
                     <label>Title:</label>
                     <input
