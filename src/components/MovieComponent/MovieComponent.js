@@ -24,10 +24,10 @@ const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes
             <img src={poster} alt={`${title} Poster`} className={styles.poster} />
             <div className={styles.details}>
                 <h2>{title}</h2>
-                <p>Release Date: {releaseDate}</p>
-                <p>Watched Date: {watchedDate}</p>
-                <p>Rating: {rating} / 10 ★ </p> 
-                <p>Remarks: {notes}</p>
+                <p><b>Release Date</b>: {releaseDate}</p>
+                <p><b>Watched Date</b>: {watchedDate}</p>
+                <p><b>Rating</b>: {rating} / 10 ★ </p> 
+                <p><b>Remarks</b>: {notes}</p>
             </div>
             <div className={styles.editIcon} onClick={handleEditClick}>
                 <img src="assets/edit.png" alt="Edit" />
