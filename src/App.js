@@ -3,6 +3,7 @@ import TitleComponent from './components/TitleComponent/TitleComponent';
 import MovieComponent from './components/MovieComponent/MovieComponent';
 import AddMovieComponent from './components/AddMovieComponent/AddMovieComponent';
 import IntroComponent from './components/IntroComponent/IntroComponent';
+import SortComponent from './components/Sort Component/SortComponent';
 import './App.css';
 
 const App = () => {
@@ -11,12 +12,41 @@ const App = () => {
         return savedMovies ? JSON.parse(savedMovies) : [];
     });
 
+    const [sortOption, setSortOption] = useState(() => {
+        return 'watchedDate'; // Default sort option
+    });
+
     const [showAddMovie, setShowAddMovie] = useState(false);
     const [editMovieIndex, setEditMovieIndex] = useState(null); // New state for editing
 
     useEffect(() => {
-        localStorage.setItem('movies', JSON.stringify(movies));
-    }, [movies]);
+        if (movies.length > 0) {
+            handleSort({ target: { value: sortOption } }); // Apply the sorting on initial load
+        }
+    }, [movies, sortOption]);
+    
+    const handleSort = (event) => {
+        const selectedSortOption = event.target.value;
+        setSortOption(selectedSortOption);
+
+        let sortedMovies;
+
+        switch (selectedSortOption) {
+            case 'releaseDate':
+                sortedMovies = [...movies].sort((b, a) => new Date(a.releaseDate) - new Date(b.releaseDate));
+                break;
+            case 'alphabetical':
+                sortedMovies = [...movies].sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'rating':
+                sortedMovies = [...movies].sort((a, b) => b.rating - a.rating);
+                break;
+            default:
+                sortedMovies = [...movies].sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
+        }
+
+        setMovies(sortedMovies);
+    };
 
     const addMovie = (newMovie) => {
         let updatedMovies;
@@ -50,20 +80,19 @@ const App = () => {
         setShowAddMovie(false);
         setEditMovieIndex(null); // Reset the edit state
     };
-    
-    // ...
-    
-    
-    
 
     return (
         <div className="App">
             <TitleComponent toggleAddMovie={() => setShowAddMovie(!showAddMovie)} />
-            <div className="content-wrapper">  {/* Yellow box */}
-                <div className="left-side-content"> {/* Purple box 1 */}
+            <div className="content-wrapper"> 
+                <div className="left-side-content"> 
                     <IntroComponent />
+                    <SortComponent 
+                        onSort={handleSort} 
+                        selectedSortOption={sortOption} 
+                    />
                 </div>
-                <div className="right-side-content"> {/* Purple box 2 */}
+                <div className="right-side-content">
                     {showAddMovie && (
                         <AddMovieComponent 
                             addMovie={addMovie} 
