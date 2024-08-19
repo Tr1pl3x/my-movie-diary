@@ -3,37 +3,33 @@ import TitleComponent from './components/TitleComponent/TitleComponent';
 import MovieComponent from './components/MovieComponent/MovieComponent';
 import AddMovieComponent from './components/AddMovieComponent/AddMovieComponent';
 import IntroComponent from './components/IntroComponent/IntroComponent';
-import SortComponent from './components/Sort Component/SortComponent';
+import SortComponent from './components/SortComponent/SortComponent';
 import './App.css';
+
 
 const App = () => {
     const [movies, setMovies] = useState(() => {
         const savedMovies = localStorage.getItem('movies');
-        return savedMovies ? JSON.parse(savedMovies) : [];
+        const initialMovies = savedMovies ? JSON.parse(savedMovies) : [];
+        return initialMovies.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
     });
 
-    const [sortOption, setSortOption] = useState(() => {
-        return 'watchedDate'; // Default sort option
-    });
-
+    const [sortOption, setSortOption] = useState('watchedDate'); // Default sort option
     const [showAddMovie, setShowAddMovie] = useState(false);
-    const [editMovieIndex, setEditMovieIndex] = useState(null); // New state for editing
+    const [editMovieIndex, setEditMovieIndex] = useState(null); // State for editing
 
     useEffect(() => {
-        if (movies.length > 0) {
-            handleSort({ target: { value: sortOption } }); // Apply the sorting on initial load
-        }
-    }, [movies, sortOption]);
-    
+        localStorage.setItem('movies', JSON.stringify(movies));
+    }, [movies]);
+
     const handleSort = (event) => {
         const selectedSortOption = event.target.value;
         setSortOption(selectedSortOption);
 
         let sortedMovies;
-
         switch (selectedSortOption) {
             case 'releaseDate':
-                sortedMovies = [...movies].sort((b, a) => new Date(a.releaseDate) - new Date(b.releaseDate));
+                sortedMovies = [...movies].sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
                 break;
             case 'alphabetical':
                 sortedMovies = [...movies].sort((a, b) => a.title.localeCompare(b.title));
@@ -57,14 +53,11 @@ const App = () => {
         } else {
             updatedMovies = [newMovie, ...movies];
         }
-        
-        // Sort movies by watchedDate in descending order (most recent first)
-        updatedMovies.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
-        
+
+        handleSort({ target: { value: sortOption } }); // Apply sorting based on the selected option
         setMovies(updatedMovies);
         setShowAddMovie(false); // Hide form after adding
     };
-    
 
     const removeMovie = (index) => {
         const updatedMovies = movies.filter((_, i) => i !== index);
