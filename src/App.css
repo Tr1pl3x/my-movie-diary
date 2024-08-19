@@ -24,8 +24,8 @@
 
 .fixed-icon {
     position: fixed;
-    top: 10px;
-    right: 10px;
+    bottom: 20px;
+    left: 10px;
     width: 40px;
     height: 40px;
     z-index: 1000; /* Ensures the icon is on top */
