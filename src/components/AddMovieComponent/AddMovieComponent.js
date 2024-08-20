@@ -10,6 +10,11 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    /**
+     * This useEffect hook runs whenever the `editMovie` prop changes.
+     * If `editMovie` is truthy (i.e., a movie is being edited), it pre-fills the form fields with the movie's details.
+     * If `editMovie` is falsy (i.e., a new movie is being added), it clears the form fields.
+     */
     useEffect(() => {
         if (editMovie) {
             setTitle(editMovie.title);
@@ -25,20 +30,25 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
         }
     }, [editMovie]);
 
+    /**
+     * handleSubmit is an asynchronous function that handles the form submission.
+     * It first checks if the entered password matches the admin password.
+     * If the password is correct, it makes a request to The Movie Database (TMDb) API to fetch movie details.
+     * If the API returns a valid movie, it creates a new movie object with the fetched details and calls the `addMovie` function to save it.
+     * If the API call fails or no movie is found, it sets an error message to be displayed.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== config.adminPassword) {
             setError('Incorrect password');
             return;
         }
-
+    
         // Fetch movie details from API
         const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data)
-            
             if (data.results && data.results.length > 0) {
                 const movie = data.results[0];
                 const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
@@ -53,13 +63,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                     notes: notes.trim() === '' ? 'No comments' : notes,
                 };
     
-                addMovie(newMovie);
-                setTitle('');
-                setWatchedDate('');
-                setRating('');
-                setNotes('');
-                setPassword('');
-                setError('');
+                await addMovie(newMovie);
             } else {
                 setError('No movie found with that title');
             }
@@ -67,7 +71,14 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
             setError('Failed to fetch movie details');
         }
     };
-
+    
+    /**
+     * The return statement defines the JSX structure of the component.
+     * It includes form fields for entering the movie title, watched date, rating, and remarks.
+     * If the form is being used to edit an existing movie, the title field is made read-only.
+     * The form also includes a password field to authenticate the user before allowing a movie to be added or updated.
+     * If there's an error (e.g., incorrect password or no movie found), it is displayed below the form fields.
+     */
     return (
         <div className={styles.addMovieForm}>
             <h2>{editMovie ? 'Edit the details of the selected movie 🛠️' : "What's the latest movie you watched? 👀"}</h2>
@@ -80,14 +91,14 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        readOnly={!!editMovie}  /* Only read-only when editing */
+                        readOnly={!!editMovie}  
                         className={editMovie ? styles.readOnlyInput : ''}
                         required
                     />
                 </div>
                 
                 <div>
-                    <label>Watched Date:</label>
+                    <label>Date Watched:</label>
                     <input
                         type="date"
                         value={watchedDate}
@@ -96,7 +107,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                     />
                 </div>
                 <div>
-                    <label>Ratings:</label>
+                    <label>Rating:</label>
                     <input
                         type="number"
                         value={rating}
