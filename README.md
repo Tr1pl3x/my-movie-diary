@@ -1,7 +1,6 @@
 # 🎬 my-movie-diary
 
 Greetings!! 🤠 
-This web application allows you to keep track of movies you've watched, along with details such as the date watched, rating, and personal remarks. The application also lets you sort your movie list and provides password protection for adding, editing, or removing movies.
 This web application allows you to view the list of movies I have watched along with the details such as the date watched, rating, release date and my personal remarks. The purpose of the project is to create my own personalised movie diary while I explore and learn about web-development (front-end and backend) and web deployment.
 
 ---
