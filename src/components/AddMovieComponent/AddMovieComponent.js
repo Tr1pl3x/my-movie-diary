@@ -10,6 +10,11 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    /**
+     * This useEffect hook runs whenever the `editMovie` prop changes.
+     * If `editMovie` is truthy (i.e., a movie is being edited), it pre-fills the form fields with the movie's details.
+     * If `editMovie` is falsy (i.e., a new movie is being added), it clears the form fields.
+     */
     useEffect(() => {
         if (editMovie) {
             setTitle(editMovie.title);
@@ -25,6 +30,13 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
         }
     }, [editMovie]);
 
+    /**
+     * handleSubmit is an asynchronous function that handles the form submission.
+     * It first checks if the entered password matches the admin password.
+     * If the password is correct, it makes a request to The Movie Database (TMDb) API to fetch movie details.
+     * If the API returns a valid movie, it creates a new movie object with the fetched details and calls the `addMovie` function to save it.
+     * If the API call fails or no movie is found, it sets an error message to be displayed.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== config.adminPassword) {
@@ -60,7 +72,13 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
         }
     };
     
-
+    /**
+     * The return statement defines the JSX structure of the component.
+     * It includes form fields for entering the movie title, watched date, rating, and remarks.
+     * If the form is being used to edit an existing movie, the title field is made read-only.
+     * The form also includes a password field to authenticate the user before allowing a movie to be added or updated.
+     * If there's an error (e.g., incorrect password or no movie found), it is displayed below the form fields.
+     */
     return (
         <div className={styles.addMovieForm}>
             <h2>{editMovie ? 'Edit the details of the selected movie 🛠️' : "What's the latest movie you watched? 👀"}</h2>

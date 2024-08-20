@@ -15,6 +15,12 @@ const App = () => {
     // Replace the localhost URL with your Render backend URL
     const backendUrl = 'https://backend-my-movie-diary.onrender.com/movies';
 
+    /**
+     * Fetch movies from the backend when the component is mounted.
+     * The fetched movies are then sorted by the watched date in descending order (most recent first)
+     * and stored in the `movies` state.
+     * This effect runs only once when the component is first rendered.
+     */
     useEffect(() => {
         const fetchMovies = async () => {
             try {
@@ -32,6 +38,11 @@ const App = () => {
         fetchMovies();
     }, []);
     
+    /**
+     * Handles sorting the movies array based on the selected sorting option.
+     * The `sortOption` can be 'releaseDate', 'alphabetical', 'rating', or 'watchedDate'.
+     * After sorting, the sorted movies are updated in the `movies` state.
+     */
     const handleSort = (event) => {
         const selectedSortOption = event.target.value;
         setSortOption(selectedSortOption);
@@ -54,6 +65,12 @@ const App = () => {
         setMovies(sortedMovies);
     };
 
+    /**
+     * Adds a new movie or updates an existing movie by sending a POST request to the backend.
+     * If editing, the movie being edited is updated in the `movies` state; otherwise, the new movie is added.
+     * The movies list is then re-sorted based on the currently selected sort option.
+     * After the operation, the add/edit form is hidden.
+     */
     const addMovie = async (newMovie) => {
         try {
             const response = await fetch(backendUrl, {
@@ -64,7 +81,8 @@ const App = () => {
                 body: JSON.stringify(newMovie),
             });
     
-            if (!response.ok) {  // Check if the response status is not OK (200)
+            // Check if the response status is not OK (200)
+            if (!response.ok) {  
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
     
@@ -74,19 +92,23 @@ const App = () => {
             if (editMovieIndex !== null) {
                 updatedMovies = [...movies];
                 updatedMovies[editMovieIndex] = addedMovie; // Replace the movie being edited
-                setEditMovieIndex(null); // Reset edit state
+                setEditMovieIndex(null);                    // Reset edit state
             } else {
                 updatedMovies = [addedMovie, ...movies];
             }
     
             handleSort({ target: { value: sortOption } }); // Apply sorting based on the selected option
             setMovies(updatedMovies);
-            setShowAddMovie(false); // Hide form after adding
+            setShowAddMovie(false);                        // Hide form after adding
         } catch (error) {
             console.error('Failed to add movie:', error);  // Log the error
         }
     };
     
+    /**
+     * Removes a movie from the list by sending a DELETE request to the backend.
+     * The movie is identified by its index, and once removed, the `movies` state is updated.
+     */
     const removeMovie = async (index) => {
         try {
             const movieId = movies[index].movieId;
@@ -107,11 +129,19 @@ const App = () => {
         }
     };
 
+    /**
+     * Prepares the component for editing a movie by setting the `editMovieIndex` to the index of the movie to edit.
+     * The add/edit form is then displayed, allowing the user to make changes.
+     */
     const startEditing = (index) => {
         setEditMovieIndex(index); // Set the movie being edited
         setShowAddMovie(true); // Show the form
     };
 
+    /**
+     * Closes the add/edit form and resets any editing state.
+     * This hides the form and ensures no movie is marked for editing.
+     */
     const closeForm = () => {
         setShowAddMovie(false);
         setEditMovieIndex(null); // Reset the edit state
