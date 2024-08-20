@@ -73,14 +73,14 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        readOnly={!!editMovie}  /* Only read-only when editing */
+                        readOnly={!!editMovie}  
                         className={editMovie ? styles.readOnlyInput : ''}
                         required
                     />
                 </div>
                 
                 <div>
-                    <label>Watched Date:</label>
+                    <label>Date Watched:</label>
                     <input
                         type="date"
                         value={watchedDate}
@@ -89,7 +89,7 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                     />
                 </div>
                 <div>
-                    <label>Ratings:</label>
+                    <label>Rating:</label>
                     <input
                         type="number"
                         value={rating}
