@@ -153,24 +153,32 @@ p {
         height: 4px;
         background: #555;
         border-radius: 2px;
-        margin: 0 auto 12px;
+        margin: 0 auto 4px;
     }
 
-    .sheetClose {
-        position: absolute;
-        top: 10px;
-        right: 14px;
-        background: none;
-        border: none;
-        color: #888;
-        font-size: 1.6rem;
+    .sheetToolbar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 8px;
+    }
+
+    .sheetToolbarIcon {
         cursor: pointer;
-        padding: 0;
-        line-height: 1;
+        width: 18px;
+        height: 18px;
     }
 
-    .sheetClose:hover {
-        color: #fff;
+    .sheetToolbarIcon img {
+        width: 100%;
+        height: 100%;
+        filter: invert(100%);
+        transition: opacity 0.2s;
+    }
+
+    .sheetToolbarIcon:hover img {
+        opacity: 0.5;
     }
 
     .sheetContent {
@@ -201,40 +209,6 @@ p {
     .sheetDetails p {
         margin: 6px 0;
         font-size: 0.95rem;
-    }
-
-    .sheetActions {
-        display: flex;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .sheetEditBtn,
-    .sheetDeleteBtn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-    }
-
-    .sheetEditBtn {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .sheetEditBtn:hover {
-        background-color: #0056b3;
-    }
-
-    .sheetDeleteBtn {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .sheetDeleteBtn:hover {
-        background-color: #b02a37;
     }
 
     @keyframes slideUp {

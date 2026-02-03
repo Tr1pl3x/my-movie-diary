@@ -200,7 +200,7 @@ const App = () => {
                     <div className="search-bar">
                         <input
                             type="text"
-                            placeholder="Search your movies..."
+                            placeholder="Search movies..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
