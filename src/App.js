@@ -178,10 +178,6 @@ const App = () => {
             <div className="content-wrapper">
                 <div className="left-side-content">
                     <IntroComponent />
-                    <SortComponent
-                        onSort={handleSort}
-                        selectedSortOption={sortOption}
-                    />
                     <button
                         className="mobile-add-button"
                         onClick={() => setShowAddMovie(!showAddMovie)}
@@ -197,22 +193,28 @@ const App = () => {
                             closeForm={closeForm}
                         />
                     )}
-                    <div className="search-bar">
-                        <input
-                            type="text"
-                            placeholder="Search movies..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                    <div className="search-sort-row">
+                        <div className="search-bar">
+                            <input
+                                type="text"
+                                placeholder="Search movies..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            {searchQuery && (
+                                <button
+                                    className="search-clear"
+                                    onClick={() => setSearchQuery('')}
+                                    aria-label="Clear search"
+                                >
+                                    ×
+                                </button>
+                            )}
+                        </div>
+                        <SortComponent
+                            onSort={handleSort}
+                            selectedSortOption={sortOption}
                         />
-                        {searchQuery && (
-                            <button
-                                className="search-clear"
-                                onClick={() => setSearchQuery('')}
-                                aria-label="Clear search"
-                            >
-                                ×
-                            </button>
-                        )}
                     </div>
                     {movies
                         .filter((movie) =>

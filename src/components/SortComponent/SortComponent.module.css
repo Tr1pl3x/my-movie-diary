@@ -1,29 +1,30 @@
-/* SortComponent.module.css */
 .sortContainer {
     display: flex;
     align-items: center;
-    background-color: #3d9095;
-    padding: 10px;
+    flex-shrink: 0;
+}
+
+.sortContainer label {
+    color: #888;
+    font-size: 0.85rem;
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.sortContainer select {
+    padding: 10px 10px;
     border-radius: 8px;
-    margin-top: 10px;
-    width: 100%;
-    max-width: 300px;
-    box-sizing: border-box;
+    border: 1px solid #444;
+    background-color: #1e1f22;
+    color: #fff;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    appearance: auto;
+    transition: border-color 0.2s;
+    margin-bottom: 0;
 }
 
-@media (max-width: 768px) {
-    .sortContainer {
-        max-width: 100%;
-    }
-}
-
-label {
-    margin-right: 10px;
-    color: rgb(255, 255, 255);
-}
-
-select {
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
+.sortContainer select:focus {
+    border-color: #007bff;
 }
