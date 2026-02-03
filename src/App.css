@@ -43,3 +43,23 @@
 .fixed-icon:hover img {
     opacity: 0.5;
 }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+
+    .left-side-content {
+        max-width: 100%;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .right-side-content {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+}

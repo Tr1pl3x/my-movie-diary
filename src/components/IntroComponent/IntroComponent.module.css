@@ -1,11 +1,19 @@
 .introduction {
     background-color: rgb(66, 71, 85);
     color: white;
-    padding: 10px 10px 15px 0px;
+    padding: 10px;
     border-radius: 8px;
-    width: 300px; /* Consistent with your width setting */
+    width: 100%;
+    max-width: 300px;
     font-size: 0.9rem;
     line-height: 1.6;
-    text-align: justify; /* This aligns the text to both the left and right */
+    text-align: justify;
     height: auto;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .introduction {
+        max-width: 100%;
+    }
 }

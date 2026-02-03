@@ -40,4 +40,16 @@
     opacity: 0.9;
 }
 
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .titleContainer {
+        height: auto;
+        padding: 15px 10px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+}
+
 
