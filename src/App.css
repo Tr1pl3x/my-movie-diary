@@ -72,6 +72,17 @@
     margin-bottom: 0;
 }
 
+/* Hide browser-native clear button */
+.search-bar input::-webkit-search-cancel-button,
+.search-bar input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.search-bar input::-ms-clear {
+    display: none;
+}
+
 .search-bar input::placeholder {
     color: #888;
 }
@@ -85,17 +96,19 @@
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
+    background: none !important;
     border: none;
     color: #888;
     font-size: 1.3rem;
     cursor: pointer;
     padding: 0 4px;
     line-height: 1;
+    width: auto;
 }
 
 .search-clear:hover {
     color: #fff;
+    background: none !important;
 }
 
 .scroll-top-btn {
