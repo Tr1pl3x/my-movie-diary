@@ -3,7 +3,6 @@
 // as props, along with two functions (onRemove and onEdit) to handle movie removal and editing.
 import React from 'react';
 import styles from './MovieComponent.module.css';
-import config from '../../config';
 
 const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes, onRemove, onEdit }) => {
 
@@ -11,10 +10,8 @@ const MovieComponent = ({ title, poster, releaseDate, watchedDate, rating, notes
     // It prompts the user for an admin password and, if correct, calls the onRemove function passed in as a prop.
     const handleRemoveClick = () => {
         const password = prompt('Enter admin password to remove this movie:');
-        if (password === config.adminPassword) {
-            onRemove(); 
-        } else {
-            alert('Incorrect password. Movie not removed.');
+        if (password) {
+            onRemove(password);
         }
     };
 

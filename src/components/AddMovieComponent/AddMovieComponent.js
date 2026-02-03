@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AddMovieComponent.module.css';
-import config from '../../config';
+import config from '../../config'; // For TMDb API key
 
 const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
     const [title, setTitle] = useState('');
@@ -39,11 +39,8 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
      */
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== config.adminPassword) {
-            setError('Incorrect password');
-            return;
-        }
-    
+        setError(''); // Clear previous errors
+
         // Fetch movie details from API
         const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
         try {
@@ -61,9 +58,18 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                     watchedDate,
                     rating,
                     notes: notes.trim() === '' ? 'No comments' : notes,
+                    adminPassword: password,
                 };
     
-                await addMovie(newMovie);
+                try {
+                    await addMovie(newMovie);
+                } catch (err) {
+                    if (err.message === 'Unauthorized') {
+                        setError('Incorrect password');
+                    } else {
+                        setError('Failed to save movie');
+                    }
+                }
             } else {
                 setError('No movie found with that title');
             }

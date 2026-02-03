@@ -1,6 +1,5 @@
 const config = {
-    apiKey: '8fc2844082992a91743e504f0fc3d836',
-    adminPassword: '2911' 
+    apiKey: process.env.REACT_APP_TMDB_API_KEY,
 };
 
 export default config;

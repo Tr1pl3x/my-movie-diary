@@ -81,8 +81,10 @@ const App = () => {
                 body: JSON.stringify(newMovie),
             });
     
-            // Check if the response status is not OK (200)
-            if (!response.ok) {  
+            if (response.status === 401) {
+                throw new Error('Unauthorized');
+            }
+            if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
     
@@ -96,9 +98,23 @@ const App = () => {
             } else {
                 updatedMovies = [addedMovie, ...movies];
             }
-    
-            handleSort({ target: { value: sortOption } }); // Apply sorting based on the selected option
-            setMovies(updatedMovies);
+
+            // Sort the updated movies array based on current sort option
+            let sortedMovies;
+            switch (sortOption) {
+                case 'releaseDate':
+                    sortedMovies = updatedMovies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+                    break;
+                case 'alphabetical':
+                    sortedMovies = updatedMovies.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'rating':
+                    sortedMovies = updatedMovies.sort((a, b) => b.rating - a.rating);
+                    break;
+                default:
+                    sortedMovies = updatedMovies.sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
+            }
+            setMovies(sortedMovies);
             setShowAddMovie(false);                        // Hide form after adding
         } catch (error) {
             console.error('Failed to add movie:', error);  // Log the error
@@ -109,19 +125,27 @@ const App = () => {
      * Removes a movie from the list by sending a DELETE request to the backend.
      * The movie is identified by its index, and once removed, the `movies` state is updated.
      */
-    const removeMovie = async (index) => {
+    const removeMovie = async (index, password) => {
         try {
             const movieId = movies[index].movieId;
             console.log('Deleting movie with ID:', movieId); // Log the movieId
-    
+
             if (!movieId) {
                 throw new Error('movieId is undefined');
             }
-    
-            await fetch(`${backendUrl}/${movieId}`, {
+
+            const response = await fetch(`${backendUrl}/${movieId}`, {
                 method: 'DELETE',
+                headers: {
+                    'x-admin-password': password,
+                },
             });
-    
+
+            if (response.status === 401) {
+                alert('Incorrect password. Movie not removed.');
+                return;
+            }
+
             const updatedMovies = movies.filter((_, i) => i !== index);
             setMovies(updatedMovies);
         } catch (error) {
@@ -168,9 +192,9 @@ const App = () => {
                     )}
                     {movies.map((movie, index) => (
                         <MovieComponent
-                            key={index}
+                            key={movie.movieId}
                             {...movie}
-                            onRemove={() => removeMovie(index)}
+                            onRemove={(password) => removeMovie(index, password)}
                             onEdit={() => startEditing(index)}
                         />
                     ))}
