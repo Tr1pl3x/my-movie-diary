@@ -80,5 +80,65 @@ button:hover {
 }
 
 .closeButton:hover {
-    color: #ff6600; 
+    color: #ff6600;
+}
+
+.titleWrapper {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #1e1f22;
+    border: 1px solid #444;
+    border-radius: 5px;
+    list-style: none;
+    margin: -10px 0 0 0;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+.suggestionItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.suggestionItem:hover {
+    background-color: #333;
+}
+
+.suggestionPoster {
+    width: 36px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.suggestionInfo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.suggestionTitle {
+    color: #fff;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.suggestionYear {
+    color: #999;
+    font-size: 0.8rem;
 }

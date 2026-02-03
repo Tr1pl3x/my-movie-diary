@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './AddMovieComponent.module.css';
 import config from '../../config'; // For TMDb API key
 
@@ -9,12 +9,11 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
     const [notes, setNotes] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedMovie, setSelectedMovie] = useState(null);
+    const debounceRef = useRef(null);
+    const suggestionsRef = useRef(null);
 
-    /**
-     * This useEffect hook runs whenever the `editMovie` prop changes.
-     * If `editMovie` is truthy (i.e., a movie is being edited), it pre-fills the form fields with the movie's details.
-     * If `editMovie` is falsy (i.e., a new movie is being added), it clears the form fields.
-     */
     useEffect(() => {
         if (editMovie) {
             setTitle(editMovie.title);
@@ -22,60 +21,98 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
             setRating(editMovie.rating);
             setNotes(editMovie.notes);
         } else {
-            // Clear fields when adding a new movie
             setTitle('');
             setWatchedDate('');
             setRating('');
             setNotes('');
+            setSelectedMovie(null);
         }
     }, [editMovie]);
 
-    /**
-     * handleSubmit is an asynchronous function that handles the form submission.
-     * It first checks if the entered password matches the admin password.
-     * If the password is correct, it makes a request to The Movie Database (TMDb) API to fetch movie details.
-     * If the API returns a valid movie, it creates a new movie object with the fetched details and calls the `addMovie` function to save it.
-     * If the API call fails or no movie is found, it sets an error message to be displayed.
-     */
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Clear previous errors
+    // Close suggestions when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (suggestionsRef.current && !suggestionsRef.current.contains(e.target)) {
+                setSuggestions([]);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
-        // Fetch movie details from API
-        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
+    const searchMovies = useCallback(async (query) => {
+        if (query.trim().length < 2) {
+            setSuggestions([]);
+            return;
+        }
+        const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&api_key=${config.apiKey}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
-            if (data.results && data.results.length > 0) {
-                const movie = data.results[0];
-                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                const releaseDate = movie.release_date;
-    
-                const newMovie = {
-                    ...(editMovie && { movieId: editMovie.movieId }), // Include movieId when editing
-                    title: movie.title,
-                    poster: posterUrl,
-                    releaseDate: releaseDate,
-                    watchedDate,
-                    rating,
-                    notes: notes.trim() === '' ? 'No comments' : notes,
-                    adminPassword: password,
-                };
-    
-                try {
-                    await addMovie(newMovie);
-                } catch (err) {
-                    if (err.message === 'Unauthorized') {
-                        setError('Incorrect password');
-                    } else {
-                        setError('Failed to save movie');
-                    }
+            setSuggestions(data.results ? data.results.slice(0, 7) : []);
+        } catch {
+            setSuggestions([]);
+        }
+    }, []);
+
+    const handleTitleChange = (e) => {
+        const value = e.target.value;
+        setTitle(value);
+        setSelectedMovie(null);
+
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => searchMovies(value), 300);
+    };
+
+    const handleSelectSuggestion = (movie) => {
+        setTitle(movie.title);
+        setSelectedMovie(movie);
+        setSuggestions([]);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        // Use stored movie data if available, otherwise search TMDb
+        let movie = selectedMovie;
+        if (!movie) {
+            const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}&api_key=${config.apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    movie = data.results[0];
+                } else {
+                    setError('No movie found with that title');
+                    return;
                 }
-            } else {
-                setError('No movie found with that title');
+            } catch {
+                setError('Failed to fetch movie details');
+                return;
             }
-        } catch (error) {
-            setError('Failed to fetch movie details');
+        }
+
+        const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        const newMovie = {
+            ...(editMovie && { movieId: editMovie.movieId }),
+            title: movie.title,
+            poster: posterUrl,
+            releaseDate: movie.release_date,
+            watchedDate,
+            rating,
+            notes: notes.trim() === '' ? 'No comments' : notes,
+            adminPassword: password,
+        };
+
+        try {
+            await addMovie(newMovie);
+        } catch (err) {
+            if (err.message === 'Unauthorized') {
+                setError('Incorrect password');
+            } else {
+                setError('Failed to save movie');
+            }
         }
     };
     
@@ -88,20 +125,48 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
      */
     return (
         <div className={styles.addMovieForm}>
-            <h2>{editMovie ? 'Edit the details of the selected movie 🛠️' : "What's the latest movie you watched? 👀"}</h2>
+            <h2>{editMovie ? 'Edit the details of the selected movie ' : "What's the latest movie you watched? "}</h2>
             
             <form onSubmit={handleSubmit}>
                 <div className={styles.closeButton} onClick={closeForm}>×</div>  {}
-                <div>
+                <div className={styles.titleWrapper} ref={suggestionsRef}>
                     <label>Title:</label>
                     <input
                         type="text"
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        readOnly={!!editMovie}  
+                        onChange={handleTitleChange}
+                        readOnly={!!editMovie}
                         className={editMovie ? styles.readOnlyInput : ''}
+                        autoComplete="off"
                         required
                     />
+                    {suggestions.length > 0 && (
+                        <ul className={styles.suggestions}>
+                            {suggestions.map((movie) => (
+                                <li
+                                    key={movie.id}
+                                    className={styles.suggestionItem}
+                                    onMouseDown={() => handleSelectSuggestion(movie)}
+                                >
+                                    {movie.poster_path && (
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                                            alt=""
+                                            className={styles.suggestionPoster}
+                                        />
+                                    )}
+                                    <div className={styles.suggestionInfo}>
+                                        <span className={styles.suggestionTitle}>{movie.title}</span>
+                                        {movie.release_date && (
+                                            <span className={styles.suggestionYear}>
+                                                {movie.release_date.slice(0, 4)}
+                                            </span>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 
                 <div>
