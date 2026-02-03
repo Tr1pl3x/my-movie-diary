@@ -181,6 +181,12 @@ const App = () => {
                         onSort={handleSort}
                         selectedSortOption={sortOption}
                     />
+                    <button
+                        className="mobile-add-button"
+                        onClick={() => setShowAddMovie(!showAddMovie)}
+                    >
+                        + Add Movie
+                    </button>
                 </div>
                 <div className="right-side-content">
                     {showAddMovie && (

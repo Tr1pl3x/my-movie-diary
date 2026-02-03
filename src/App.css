@@ -44,8 +44,28 @@
     opacity: 0.5;
 }
 
+.mobile-add-button {
+    display: none;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
+    .mobile-add-button {
+        display: block;
+        margin-top: 10px;
+        margin-left: auto;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+
+    .mobile-add-button:hover {
+        background-color: #0056b3;
+    }
     .content-wrapper {
         flex-direction: column;
     }
@@ -61,5 +81,9 @@
         width: 100%;
         padding: 0 10px;
         box-sizing: border-box;
+    }
+
+    .fixed-icon {
+        display: none;
     }
 }
