@@ -52,7 +52,8 @@ const AddMovieComponent = ({ addMovie, editMovie, closeForm }) => {
                 const releaseDate = movie.release_date;
     
                 const newMovie = {
-                    title: movie.title, // Use title from the API response
+                    ...(editMovie && { movieId: editMovie.movieId }), // Include movieId when editing
+                    title: movie.title,
                     poster: posterUrl,
                     releaseDate: releaseDate,
                     watchedDate,
