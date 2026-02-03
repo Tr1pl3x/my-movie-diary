@@ -71,33 +71,179 @@ p {
     opacity: 0.5;
 }
 
+/* Bottom sheet (hidden on desktop) */
+.sheetOverlay {
+    display: none;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .movieCard {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         width: 100%;
         box-sizing: border-box;
+        cursor: pointer;
     }
 
     .poster {
         margin-left: 0;
-        margin-bottom: 15px;
-        width: 120px;
-        height: 160px;
+        width: 60px;
+        height: 90px;
+        flex-shrink: 0;
     }
 
     .details {
-        margin-left: 0;
-        text-align: center;
+        margin-left: 12px;
+        text-align: left;
         width: 100%;
     }
 
     .details h2 {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
+        margin: 0;
     }
 
+    /* Hide everything except title and watched date on mobile */
     .details p {
+        display: none;
         margin-left: 0;
+    }
+
+    .details p:nth-child(3) {
+        display: block;
+        font-size: 0.85rem;
+        color: #aaa;
+        margin: 4px 0 0 0;
+    }
+
+    /* Hide edit/delete icons on the card */
+    .editIcon,
+    .trashIcon {
+        display: none;
+    }
+
+    /* Bottom sheet */
+    .sheetOverlay {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: flex-end;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .bottomSheet {
+        background-color: #1e1f22;
+        color: white;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 16px 16px 0 0;
+        padding: 12px 20px 24px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        position: relative;
+        animation: slideUp 0.25s ease;
+    }
+
+    .sheetHandle {
+        width: 40px;
+        height: 4px;
+        background: #555;
+        border-radius: 2px;
+        margin: 0 auto 12px;
+    }
+
+    .sheetClose {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .sheetClose:hover {
+        color: #fff;
+    }
+
+    .sheetContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sheetPoster {
+        width: 140px;
+        height: 210px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 14px;
+    }
+
+    .sheetTitle {
+        font-size: 1.4rem;
+        margin: 0 0 10px;
+        text-align: center;
+    }
+
+    .sheetDetails {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    .sheetDetails p {
+        margin: 6px 0;
+        font-size: 0.95rem;
+    }
+
+    .sheetActions {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .sheetEditBtn,
+    .sheetDeleteBtn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    .sheetEditBtn {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .sheetEditBtn:hover {
+        background-color: #0056b3;
+    }
+
+    .sheetDeleteBtn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .sheetDeleteBtn:hover {
+        background-color: #b02a37;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 }

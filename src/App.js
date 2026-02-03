@@ -11,9 +11,10 @@ const App = () => {
     const [sortOption, setSortOption] = useState('watchedDate'); // Default sort option
     const [showAddMovie, setShowAddMovie] = useState(false);
     const [editMovieIndex, setEditMovieIndex] = useState(null); // State for editing
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Replace the localhost URL with your Render backend URL
-    const backendUrl = 'https://backend-my-movie-diary.onrender.com/movies';
+    const backendUrl = 'https://backend-my-movie-diary.vercel.app/movies';
 
     /**
      * Fetch movies from the backend when the component is mounted.
@@ -196,14 +197,38 @@ const App = () => {
                             closeForm={closeForm}
                         />
                     )}
-                    {movies.map((movie, index) => (
-                        <MovieComponent
-                            key={movie.movieId}
-                            {...movie}
-                            onRemove={(password) => removeMovie(index, password)}
-                            onEdit={() => startEditing(index)}
+                    <div className="search-bar">
+                        <input
+                            type="text"
+                            placeholder="Search your movies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                    ))}
+                        {searchQuery && (
+                            <button
+                                className="search-clear"
+                                onClick={() => setSearchQuery('')}
+                                aria-label="Clear search"
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
+                    {movies
+                        .filter((movie) =>
+                            movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+                        )
+                        .map((movie, _) => {
+                            const originalIndex = movies.indexOf(movie);
+                            return (
+                                <MovieComponent
+                                    key={movie.movieId}
+                                    {...movie}
+                                    onRemove={(password) => removeMovie(originalIndex, password)}
+                                    onEdit={() => startEditing(originalIndex)}
+                                />
+                            );
+                        })}
                 </div>
             </div>
             <div className="fixed-icon">
