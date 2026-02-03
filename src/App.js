@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TitleComponent from './components/TitleComponent/TitleComponent';
 import MovieComponent from './components/MovieComponent/MovieComponent';
 import AddMovieComponent from './components/AddMovieComponent/AddMovieComponent';
@@ -12,6 +12,21 @@ const App = () => {
     const [showAddMovie, setShowAddMovie] = useState(false);
     const [editMovieIndex, setEditMovieIndex] = useState(null); // State for editing
     const [searchQuery, setSearchQuery] = useState('');
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrolled = window.scrollY;
+            const halfway = document.documentElement.scrollHeight / 2;
+            setShowScrollTop(scrolled > halfway);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = useCallback(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, []);
 
     // Replace the localhost URL with your Render backend URL
     const backendUrl = 'https://backend-my-movie-diary.vercel.app/movies';
@@ -238,6 +253,13 @@ const App = () => {
                     <img src="assets/github.png" alt="Fixed Icon" />
                 </a>
             </div>
+            {showScrollTop && (
+                <button className="scroll-top-btn" onClick={scrollToTop} aria-label="Scroll to top">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="18 15 12 9 6 15" />
+                    </svg>
+                </button>
+            )}
         </div>
     );
 };
